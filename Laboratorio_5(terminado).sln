@@ -1,28 +1,137 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Laboratorio_5(terminado)", "Laboratorio_5(terminado)\Laboratorio_5(terminado).vcxproj", "{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Debug|x64.ActiveCfg = Debug|x64
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Debug|x64.Build.0 = Debug|x64
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Debug|x86.ActiveCfg = Debug|Win32
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Debug|x86.Build.0 = Debug|Win32
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Release|x64.ActiveCfg = Release|x64
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Release|x64.Build.0 = Release|x64
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Release|x86.ActiveCfg = Release|Win32
-		{D3FB25A5-FDC6-4E0A-9AB9-785FBE179FB3}.Release|x86.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-EndGlobal
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Producto {
+private:
+	string nombre;
+	int codigo;
+	float precio;
+	int stock;
+
+public:
+	Producto(string nom, int cod, float pre, int stk) {
+		nombre = nom;
+		codigo = cod;
+		precio = pre;
+		stock = stk;
+	}
+	void mostrar() {
+		std::cout << "Codigo: " << codigo << "Producto: " << nombre << "Precio: Q" << precio << "Stock: " << stock << '\n';
+	}
+
+	int obtenerCod() {
+		return codigo;
+	}
+	int obtenerStock() {
+		return stock;
+	}
+
+	void actualizarStock(int cantidad) {
+		if (cantidad > stock) {
+			std::cout << "No hay suficiente stock disponible. \n";
+		}
+		else {
+			stock -= cantidad;
+			std::cout << "Stock actualizado. Nuevo stock: " << stock << '\n';
+		}
+	}
+	float obtenerValor() {
+		return stock * precio;
+	}
+};
+
+void agregarProd(vector<Producto>& inventario) {
+	string nombre;
+	int codigo, stock;
+	float precio;
+
+	std::cout << "Ingrese el nombre del producto: ";
+	std::cin >> nombre;
+	std::cout << "Ingrese el codigo: ";
+	std::cin >> codigo;
+	std::cout << "Ingrese el precio: Q";
+	std::cin >> precio;
+	std::cout << "Ingrese cantidad en stock:";
+	std::cin >> stock;
+	inventario.push_back(Producto(nombre, codigo, precio, stock));
+}
+void mostrarInv(vector<Producto>& inventario) {
+	if (inventario.empty()) {
+		std::cout << "No hay productos en el inventario. \n";
+		return;
+	}
+	for (Producto& producto : inventario) {
+		producto.mostrar();
+	}
+}
+
+void buscarProd(vector<Producto>& inventario) {
+	int codigo;
+	std::cout << "Ingrese codigo del producto a buscar: \n";
+	std::cin >> codigo;
+
+	for (Producto& producto : inventario) {
+		if (producto.obtenerCod() == codigo) {
+			std::cout << "Producto encontrado. \n";
+			producto.mostrar();
+			return;
+		}
+	}
+	cout << "Producto no encontrado. \n";
+}
+void actualizarStk(vector<Producto>& inventario) {
+	int codigo, cantidad;
+	cout << "Ingrese el codigo del producto a actualizar: \n";
+	std::cin >> codigo;
+
+	for (Producto& producto : inventario) {
+		if (producto.obtenerCod() == codigo) {
+			std::cout << "Ingrese la cantidad a restar: \n";
+			std::cin >> cantidad;
+			producto.actualizarStock(cantidad);
+			return;
+		}
+	}
+	std::cout << "Producto no encontrado. \n";
+}
+void calcularTotal(vector<Producto>& inventario) {
+	float total = 0;
+	for (Producto& producto : inventario) {
+		total += producto.obtenerValor();
+	}
+	std::cout << "Valor total del inventario: Q" << total << '\n';
+}
+
+int main() {
+	vector<Producto> inventario;
+	int opcion;
+	do {
+		cout << "\nSistema de Inventario\n";
+		cout << "1. Agregar producto\n";
+		cout << "2. Mostrar inventario\n";
+		cout << "3. Buscar producto por codigo\n";
+		cout << "4. Actualizar stock\n";
+		cout << "5. Calcular valor total del inventario\n";
+		cout << "6. Salir\n";
+		cout << "Seleccione una opcion: ";
+		cin >> opcion;
+		switch (opcion) {
+		case 1:
+			agregarProd(inventario); break;
+		case 2:
+			mostrarInv(inventario); break;
+		case 3: 
+			buscarProd(inventario); break;
+		case 4:
+			actualizarStk(inventario); break;
+		case 5:
+			calcularTotal(inventario); break;
+		case 6:
+			std::cout << "Saliendo del programa... \n";
+		default:cout << "Opcion no valida. Intentelo de nuevo. \n";
+		}
+	} while (opcion != 6);
+	return 0;
+}
